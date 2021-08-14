@@ -3,6 +3,7 @@ const card = document.querySelector('.card');
 const details = document.querySelector('.details');
 const time = document.querySelector('img.time');
 const icon = document.querySelector('.icon img');
+const forecast = new Forecast();
 
 const updateUI = (data) => {
   // const cityDets = data.cityDets;
@@ -10,7 +11,7 @@ const updateUI = (data) => {
 
   // desctructuring properties 
   const { cityDets, weather } = data; 
-  // console.log(data);
+  
   //update details template
   details.innerHTML = `
     <h5 class="my-3">${cityDets.EnglishName}</h5>
@@ -36,17 +37,6 @@ const updateUI = (data) => {
   }
 };
 
-const updateCity = async (city) => {
-  const cityDets = await getCity(city);
-  const weather = await getWeather(cityDets.Key);
-
-  return {
-    cityDets: cityDets,
-    weather: weather
-  };
-
-  // return {cityDets, weather}; //? can use only one value, if we use the same name for key and the value
-};
 
 cityForm.addEventListener('submit', e => {
   //prevent page reloading
@@ -56,7 +46,7 @@ cityForm.addEventListener('submit', e => {
   const city = cityForm.city.value.trim();
   cityForm.reset();
   //update ui with a new city
-  updateCity(city)
+  forecast.updateCity(city)
     .then(data => updateUI(data))
     .catch(err => console.log(err));
 
@@ -65,7 +55,7 @@ cityForm.addEventListener('submit', e => {
 });
 
 if(localStorage.getItem('city')){
-  updateCity(localStorage.getItem('city'))
+  forecast.updateCity(localStorage.getItem('city'))
     .then(data => updateUI(data))
     .catch(err => console.log(err));
 }
